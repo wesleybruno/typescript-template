@@ -1,5 +1,4 @@
 import Produto from './ProdutoModel'
-import { IRepository } from '../../common/interfaces/IRepository'
 
 import {
     Db,
@@ -7,17 +6,16 @@ import {
 } from 'mongodb';
 import { collections } from '../../data/MongoDb'
 
-class ProdutoRepository implements IRepository<Produto> {
-    
-    private ProdutoDb: Collection
-    
-    constructor(db: Db) {
-        this.ProdutoDb = db.collection(collections.produto);
+let ProdutoDb: Collection
+class ProdutoRepository  {
+
+    static configure(db: Db) {
+        ProdutoDb = db.collection(collections.produto);
     }
 
-    async save(Produto: Produto): Promise<any> {
+    static async save(Produto: Produto): Promise<any> {
         try {
-            const result = await this.ProdutoDb.insertOne(
+            const result = await ProdutoDb.insertOne(
                 {
                     ...Produto
                 }
@@ -31,9 +29,9 @@ class ProdutoRepository implements IRepository<Produto> {
         }
     }
 
-    async getAll(limit: number, offset: number): Promise<Produto[]> {
+    static async getAll(limit: number, offset: number): Promise<Produto[]> {
         try {
-            const results = await this.ProdutoDb.aggregate([
+            const results = await ProdutoDb.aggregate([
                 {
                     $match: {}
                 },

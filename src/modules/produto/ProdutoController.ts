@@ -1,23 +1,18 @@
 import { Request, Response } from 'express'
 import BaseController, { ControllerMethodType } from '../../common/BaseController';
 import {
-    Db,
+    Db
 } from 'mongodb';
-
 import { Joi } from 'express-validation'
-import Produto from './ProdutoModel';
-import moment from 'moment'
-import ProdutoRepository from './ProdutoRepository';
+import ProdutoCommnad from './ProdutoCommand';
 
 class ProdutoController extends BaseController {
 
     db: Db;
-    repository: ProdutoRepository
 
     constructor(db: Db) {
         super();
         this.db = db;
-        this.repository = new ProdutoRepository(this.db)
     }
 
     get create(): ControllerMethodType {
@@ -37,15 +32,15 @@ class ProdutoController extends BaseController {
                         descricao,
                         unidadeMedida
                     } = req.body
+
+                    const command = new ProdutoCommnad(this.db);
+                    const result = await command.saveProduto(nome, descricao, unidadeMedida)
                     
-                    const produto = new Produto(nome, descricao, unidadeMedida, moment().toDate(), this.repository);
-                    produto.save()
-                    
-                    if (!produto.isValid()) {
-                        return this.Fail(res, produto.errors)
+                    if (!command.isValid()) {
+                        return this.Fail(res, command.errors)
                     }
                     
-                    return this.Ok(res, produto.toObj)
+                    return this.Ok(res, result)
                 } catch (ex) {
                     return this.BadRequest(res, ex)
                 }

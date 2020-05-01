@@ -4,9 +4,9 @@ import ExpressValidator from 'express-validation';
 import helmet from 'helmet'
 import cors from 'cors'
 
-import ProdutoModule from './modules/orcamento/produto/ProdutoModule'
+import ProdutoModule from './modules/produto/ProdutoModule'
 
-import HelperRepository from './helpers/HelperRepository'
+//import HelperRepository from './helpers/HelperRepository'
 
 import signale from 'signale'
 import bodyParser from 'body-parser'
@@ -85,7 +85,7 @@ export default class Server {
 
     _configureServices(db: Db): void {
         //ProdutoRepository.configure(db)
-        HelperRepository.configure(db);
+       // HelperRepository.configure(db);
         signale.success('Services')
     }
 
